@@ -186,6 +186,11 @@ class Commandline
      */
     public static function quoteArgument($argument, $escape = false)
     {
+        // override
+        if (stripos($argument, '/usr/bin/php -d ') !== false) {
+            return $argument;
+        }
+
         if ($escape) {
             return escapeshellarg($argument);
         } elseif (strpos($argument, "\"") !== false && $argument != '""') {

@@ -1478,7 +1478,7 @@ class Phing
                 break;
         }
 
-        if (defined('PHP_BINARY')) {
+        if (defined('PHP_BINARY') && null == getenv('PHP_COMMAND')) {
             self::setProperty('php.interpreter', PHP_BINARY);
         } else {
             self::setProperty('php.interpreter', getenv('PHP_COMMAND'));

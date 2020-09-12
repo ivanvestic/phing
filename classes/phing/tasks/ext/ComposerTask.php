@@ -170,9 +170,29 @@ class ComposerTask extends Task
         }
 
         $return = 0;
-        passthru($commandLine, $return);
+        $output = [];
 
-        if ($return > 0) {
+        $passthruOverride = (stripos($commandLine, ' error_reporting=') !== false && stripos($commandLine, 'composer ') !== false);
+
+        if (!$passthruOverride) {
+            passthru($commandLine, $return);
+        } else {
+            exec($commandLine, $output, $return);
+            $output = implode(PHP_EOL, $output);
+
+            print $output;
+        }
+
+        if (
+            $return > 0
+            && (
+                null == $output
+                || (
+                    stripos($output, '[Symfony\Component\Debug\Exception\ContextErrorException]') === false
+                    && stripos($output, 'Warning: "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"') === false
+                )
+            )
+        ) {
             throw new BuildException("Composer execution failed");
         }
     }
